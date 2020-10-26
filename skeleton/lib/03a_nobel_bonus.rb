@@ -13,10 +13,32 @@ def physics_no_chemistry
   ### not sure how to do this one yet :^D
   execute(<<-SQL)
     SELECT
-      yr
+      nobels.yr
     FROM
       nobels
+    JOIN
+     (
+        SELECT 
+          nobels.yr
+        FROM
+          nobels
+        WHERE
+          subject = 'Physics' 
+     ) AS yr_phys
+    ON nobels.yr = yr_phys.yr
+    LEFT OUTER JOIN
+     (
+        SELECT 
+          nobels.yr
+        FROM
+          nobels
+        WHERE
+          subject = 'Chemistry' 
+     ) AS yr_chem
+    ON nobels.yr = yr_chem.yr
     WHERE
-
+      yr_chem.yr IS NULL
+    GROUP BY
+      nobels.yr;
   SQL
 end
